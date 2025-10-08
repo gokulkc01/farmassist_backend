@@ -15,8 +15,8 @@ app.use('/api/prices', priceRoutes);
 
 // ✅ ADD: Health check route
 app.get('/api/health', (req, res) => {
-    res.json({ 
-        status: 'OK', 
+    res.json({
+        status: 'OK',
         message: 'FarmAssist API is running',
         timestamp: new Date().toISOString()
     });
@@ -35,6 +35,8 @@ app.get('/', (req, res) => {
         }
     });
 });
+
+console.log('backend started');
 
 
 module.exports = app;
