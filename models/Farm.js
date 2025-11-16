@@ -15,12 +15,19 @@ const farmSchema = new mongoose.Schema({
     location: {
         address: String,
         coordinates: {
-            lat: Number,
-            lng: Number
+            lat: {
+                type: Number,
+                required: true
+            },
+            lng: {
+                type: Number,
+                required: true
+            }
         },
         area: {
             type: Number,
-            min: [0.1, 'Area must be at least 0.1 acres']
+            min: [0.1, 'Area must be at least 0.1 acres'],
+            required: true
         },
         soilType: {
             type: String,
@@ -28,8 +35,15 @@ const farmSchema = new mongoose.Schema({
             default: 'loamy'
         }
     },
+    image: {
+        type: String, // URL to uploaded image
+        default: null
+    },
     crops: [{
-        name: String,
+        name: {
+            type: String,
+            required: true
+        },
         variety: String,
         plantingDate: Date,
         harvestDate: Date,
