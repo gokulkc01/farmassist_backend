@@ -23,7 +23,7 @@ const upload = multer({
         const allowedTypes = /jpeg|jpg|png|webp/;
         const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
         const mimetype = allowedTypes.test(file.mimetype);
-        
+
         if (extname && mimetype) {
             cb(null, true);
         } else {
@@ -111,7 +111,7 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
 
     } catch (error) {
         console.error('Farm registration error:', error);
-        
+
         // Handle specific Mongoose validation errors
         if (error.name === 'ValidationError') {
             const errors = Object.values(error.errors).map(err => err.message);
@@ -125,6 +125,31 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error registering farm',
+            error: error.message
+        });
+    }
+});
+
+// @desc    Get all farms for logged-in user
+// @route   GET /api/farms
+// @access  Private
+router.get('/', auth, async (req, res) => {
+    try {
+        const farms = await Farm.find({
+            owner: req.user.id,
+            isActive: true
+        }).sort({ createdAt: -1 });
+
+        res.json({
+            success: true,
+            count: farms.length,
+            data: farms
+        });
+    } catch (error) {
+        console.error('Get farms error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching farms',
             error: error.message
         });
     }

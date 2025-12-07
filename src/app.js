@@ -8,6 +8,11 @@ const plantHealth  = require('../routes/plantHealth.routes');
 const farmRoutes = require('../routes/farms');
 const SensorData = require('../routes/SensorData');
 const guidance = require('../routes/guidance');
+const tinymlRoutes = require('../routes/tinyml.routes.js');
+const insightsRoutes = require('../routes/insights.routes');
+const chatRoutes = require('../routes/chat.routes');
+const alertsRoutes = require('../routes/alerts.routes');
+const irrigationRoutes = require('../routes/irrigation.routes');
 app.use(cors());
 app.use(express.json());
 
@@ -19,6 +24,12 @@ app.use('/api/farms', farmRoutes);
 app.use('/uploads', express.static('uploads'));
 app.use('/api/sensor-data', SensorData);
 app.use('/api/guidance', guidance);
+app.use('/api/tinyml', tinymlRoutes);
+//New Smart Farm routes
+app.use('/api',insightsRoutes);
+app.use('/api', chatRoutes);
+app.use('/api', alertsRoutes);
+app.use('/api', irrigationRoutes);
 
 //Raspberry PI IP address 
 const PI_IP = 'http://10.20.17.69:5000';
@@ -58,6 +69,8 @@ app.post('/api/led', async (req, res) => {
    
 });
 
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+
 // ✅ ADD: Health check route
 app.get('/api/health', (req, res) => {
     res.json({
@@ -79,6 +92,27 @@ app.get('/', (req, res) => {
             availableCrops: '/api/prices/list/crops'
         }
     });
+});
+app.get('/smartroutes', (req, res) => {
+  res.json({
+    service: 'Smart Farm API',
+    status: 'operational',
+    version: '1.0.0',
+    timestamp: new Date().toISOString(),
+    features: [
+      'tinyml',
+      'prices', 
+      'auth',
+      'plant-health',
+      'farms',
+      'sensor-data',
+      'guidance',
+      'insights',
+      'chat',
+      'alerts',
+      'irrigation'
+    ]
+  });
 });
 
 console.log('backend started');
